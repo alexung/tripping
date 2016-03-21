@@ -38,20 +38,9 @@ def available_ranges(property)
 
     if avail == "Y"
 
-      # if tempArr is ever empty or of length 1, push @currentDate into it
-      if @tempArr.length < 2
-        @tempArr.push(@currentDate)
-      end
+      push_dates_into_temp(@tempArr, @currentDate)
 
-      # if we're iterating through and find a 'Y', but there's already 2 dates in @tempArr
-      if @tempArr.length == 2
-        @tempArr[1] = @currentDate
-      end
-
-      # if we ever hit the end of the arr and it's all 'Y' then we'll push into result
-      if i == (@availability.length-1)
-        @result.push(@tempArr)
-      end
+      push_temp_if_end(i, @availability, @tempArr, @result)
 
     else
       # if we ever hit an 'N', but our tempArr is full, push it into result
@@ -65,6 +54,26 @@ def available_ranges(property)
   end
 
   return @result
+end
+
+def push_dates_into_temp(temp, currentDate)
+  # if tempArr is ever empty or of length 1, push @currentDate into it
+    if temp.length < 2
+      temp.push(currentDate)
+    end
+
+    # if we're iterating through and find a 'Y', but there's already 2 dates in @tempArr
+    if temp.length == 2
+      temp[1] = currentDate
+    end
+
+end
+
+def push_temp_if_end(i, availability, temp, result)
+    # if we ever hit the end of the arr and it's all 'Y' then we'll push into result
+    if i == (availability.length-1)
+      result.push(temp)
+    end
 end
 
 #should return nested arr of all available dates
