@@ -67,7 +67,8 @@ def available_ranges(property)
   return @result
 end
 
-#print available_ranges(testProperty)
+#should return nested arr of all available dates
+print available_ranges(testProperty)
 
 
 # could go through object every time and check start_date + end_date to see if they're all yes'
@@ -127,4 +128,9 @@ def cost_of_booking(property, start_date, end_date)
 
 end
 
-print cost_of_booking(testProperty, "2015-01-05", "2015-01-06")
+
+# should return 311
+puts cost_of_booking(testProperty, "2015-01-05", "2015-01-06")
+
+# should return 0
+puts cost_of_booking(testProperty, "2015-01-04", "2015-01-06")
