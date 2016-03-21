@@ -117,30 +117,56 @@ def cost_of_booking(property, start_date, end_date)
   #now we have start_index and end_index
 
   #minstay
-  @minstays.each_with_index do |min_num_nights, i|
+  calc_minstay(@minstays)
+
+  #if difference between start and end date > @minstay_for_start
+  #return 0
+  check_minstay(@minstay_for_start, end_date, start_date)
+
+  #save index from start_date and save index from end_date
+  calc_prices(@prices)
+
+  return @sum
+
+end
+
+def check_available_dates(available_dates, start_date, end_date)
+  available_dates.each_with_index do |available_date, i|
+    # if the start_date and end_date fall within our ranges where it's available
+    if Date.parse(start_date) >= Date.parse(available_date[0]) && Date.parse(end_date) <= Date.parse(available_date[1])
+      @start = available_date[0]
+      @end = available_date[1]
+      break;
+      # this means we're in one of the nested arr's! let's break from this loop to continue
+    else
+      # if it's not in this range, we don't need to move further in the function
+      return 0
+    end
+
+  end
+end
+
+def calc_minstay(minstays)
+  minstays.each_with_index do |min_num_nights, i|
     if i == @start_index
       @minstay_for_start = min_num_nights
     end
   end
+end
 
-  puts @minstay_for_start
-
-  #if difference between start and end date > @minstay_for_start
-  #return 0
-  if (Date.parse(end_date) - Date.parse(start_date)) > @minstay_for_start.to_i
+def check_minstay(minstay_for_start, end_date, start_date)
+  if (Date.parse(end_date) - Date.parse(start_date)) > minstay_for_start.to_i
     return 0
   end
+end
 
-  #save index from start_date and save index from end_date
-  @prices.each_with_index do |price, i|
+def calc_prices(prices)
+  prices.each_with_index do |price, i|
     if i >= @start_index && i <= @end_index
       # if i is within our start and end bounds, we'll add it to sum
       @sum+=price.to_i
     end
   end
-
-  return @sum
-
 end
 
 
