@@ -114,8 +114,23 @@ def cost_of_booking(property, start_date, end_date)
     end
 
   end
-
   #now we have start_index and end_index
+
+  #minstay
+  @minstays.each_with_index do |min_num_nights, i|
+    if i == @start_index
+      @minstay_for_start = min_num_nights
+    end
+  end
+
+  puts @minstay_for_start
+
+  #if difference between start and end date > @minstay_for_start
+  #return 0
+  if (Date.parse(end_date) - Date.parse(start_date)) > @minstay_for_start.to_i
+    return 0
+  end
+
   #save index from start_date and save index from end_date
   @prices.each_with_index do |price, i|
     if i >= @start_index && i <= @end_index
