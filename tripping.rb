@@ -99,22 +99,8 @@ def cost_of_booking(property, start_date, end_date)
 
   end
 
-  @availability.each_with_index do |avail, i|
-    # finding the current date based on every iteration
-    @currentDate = (Date.parse(property[:start_date]) + i).strftime("%Y-%m-%d")
-
-    # get start_index
-    if @currentDate == @start
-      @start_index = i
-    end
-
-    #get end_index
-    if @currentDate == @end
-      @end_index = i
-    end
-
-  end
-  #now we have start_index and end_index
+  #get start index + end index
+  get_start_end_indices(property, @availability)
 
   #minstay
   calc_minstay(@minstays)
@@ -141,6 +127,24 @@ def check_available_dates(available_dates, start_date, end_date)
     else
       # if it's not in this range, we don't need to move further in the function
       return 0
+    end
+
+  end
+end
+
+def get_start_end_indices(property, availability)
+  availability.each_with_index do |avail, i|
+    # finding the current date based on every iteration
+    @currentDate = (Date.parse(property[:start_date]) + i).strftime("%Y-%m-%d")
+
+    # get start_index
+    if @currentDate == @start
+      @start_index = i
+    end
+
+    #get end_index
+    if @currentDate == @end
+      @end_index = i
     end
 
   end
