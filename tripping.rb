@@ -85,18 +85,11 @@ def cost_of_booking(property, start_date, end_date)
   @prices = property[:price].split(',')
   @sum = 0
 
-  @available_dates.each_with_index do |available_date, i|
-    # if the start_date and end_date fall within our ranges where it's available
-    if Date.parse(start_date) >= Date.parse(available_date[0]) && Date.parse(end_date) <= Date.parse(available_date[1])
-      @start = available_date[0]
-      @end = available_date[1]
-      break;
-      # this means we're in one of the nested arr's! let's break from this loop to continue
-    else
-      # if it's not in this range, we don't need to move further in the function
-      return 0
-    end
-
+  # check available dates
+  if check_available_dates(@available_dates, start_date, end_date) == 0
+    return 0
+  else
+    check_available_dates(@available_dates, start_date, end_date)
   end
 
   #get start index + end index
