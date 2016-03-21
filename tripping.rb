@@ -29,7 +29,6 @@ testProperty = {
 def available_ranges(property)
   @result = []
   @availability = property[:availability].split('')
-  @minstay = property[:minstay].split(',')
   @tempArr = []
 
   # iterate through @availability
@@ -68,7 +67,7 @@ def available_ranges(property)
   return @result
 end
 
-print available_ranges(testProperty)
+#print available_ranges(testProperty)
 
 
 # could go through object every time and check start_date + end_date to see if they're all yes'
@@ -79,19 +78,53 @@ print available_ranges(testProperty)
 # ==> total cost of booking the property for that date range
 # i.e. $1000 if property is available during that date range, 0 if it's unavailable for any date in that range
 def cost_of_booking(property, start_date, end_date)
-  # instantiate a sum = 0
-  # iterate through property's start_date until end_date
-    #instatiate tempMinStay
-    #instatiate tempSum
-    # if there are no's
-      # return 0
-    # else
-      # tempSum+=price on that day
-      # tempMinStay++
+  @available_dates = available_ranges(property)
+  @availability = property[:availability].split('')
+  @minstays = property[:minstay].split(',')
+  @prices = property[:price].split(',')
+  @sum = 0
 
-    # if tempMinStay >= minStay of start_date
-      # sum = tempSum
+  @available_dates.each_with_index do |available_date, i|
+    # if the start_date and end_date fall within our ranges where it's available
+    if Date.parse(start_date) >= Date.parse(available_date[0]) && Date.parse(end_date) <= Date.parse(available_date[1])
+      @start = available_date[0]
+      @end = available_date[1]
+      break;
+      # this means we're in one of the nested arr's! let's break from this loop to continue
+    else
+      # if it's not in this range, we don't need to move further in the function
+      return 0
+    end
 
-  # return sum
+  end
+
+  @availability.each_with_index do |avail, i|
+    # finding the current date based on every iteration
+    @currentDate = (Date.parse(property[:start_date]) + i).strftime("%Y-%m-%d")
+
+    # get start_index
+    if @currentDate == @start
+      @start_index = i
+    end
+
+    #get end_index
+    if @currentDate == @end
+      @end_index = i
+    end
+
+  end
+
+  #now we have start_index and end_index
+  #save index from start_date and save index from end_date
+  @prices.each_with_index do |price, i|
+    if i >= @start_index && i <= @end_index
+      # if i is within our start and end bounds, we'll add it to sum
+      @sum+=price.to_i
+    end
+  end
+
+  return @sum
+
 end
 
+print cost_of_booking(testProperty, "2015-01-05", "2015-01-06")
