@@ -38,20 +38,9 @@ def available_ranges(property)
 
     if avail == "Y"
 
-      # if tempArr is ever empty or of length 1, push @currentDate into it
-      if @tempArr.length < 2
-        @tempArr.push(@currentDate)
-      end
+      push_dates_into_temp(@tempArr, @currentDate)
 
-      # if we're iterating through and find a 'Y', but there's already 2 dates in @tempArr
-      if @tempArr.length == 2
-        @tempArr[1] = @currentDate
-      end
-
-      # if we ever hit the end of the arr and it's all 'Y' then we'll push into result
-      if i == (@availability.length-1)
-        @result.push(@tempArr)
-      end
+      push_temp_if_end(i, @availability, @tempArr, @result)
 
     else
       # if we ever hit an 'N', but our tempArr is full, push it into result
@@ -65,6 +54,26 @@ def available_ranges(property)
   end
 
   return @result
+end
+
+def push_dates_into_temp(temp, currentDate)
+  # if tempArr is ever empty or of length 1, push @currentDate into it
+    if temp.length < 2
+      temp.push(currentDate)
+    end
+
+    # if we're iterating through and find a 'Y', but there's already 2 dates in @tempArr
+    if temp.length == 2
+      temp[1] = currentDate
+    end
+
+end
+
+def push_temp_if_end(i, availability, temp, result)
+    # if we ever hit the end of the arr and it's all 'Y' then we'll push into result
+    if i == (availability.length-1)
+      result.push(temp)
+    end
 end
 
 #should return nested arr of all available dates
@@ -85,36 +94,15 @@ def cost_of_booking(property, start_date, end_date)
   @prices = property[:price].split(',')
   @sum = 0
 
-  @available_dates.each_with_index do |available_date, i|
-    # if the start_date and end_date fall within our ranges where it's available
-    if Date.parse(start_date) >= Date.parse(available_date[0]) && Date.parse(end_date) <= Date.parse(available_date[1])
-      @start = available_date[0]
-      @end = available_date[1]
-      break;
-      # this means we're in one of the nested arr's! let's break from this loop to continue
-    else
-      # if it's not in this range, we don't need to move further in the function
-      return 0
-    end
-
+  # check available dates
+  if check_available_dates(@available_dates, start_date, end_date) == 0
+    return 0
+  else
+    check_available_dates(@available_dates, start_date, end_date)
   end
 
-  @availability.each_with_index do |avail, i|
-    # finding the current date based on every iteration
-    @currentDate = (Date.parse(property[:start_date]) + i).strftime("%Y-%m-%d")
-
-    # get start_index
-    if @currentDate == @start
-      @start_index = i
-    end
-
-    #get end_index
-    if @currentDate == @end
-      @end_index = i
-    end
-
-  end
-  #now we have start_index and end_index
+  #get start index + end index
+  get_start_end_indices(property, @availability)
 
   #minstay
   calc_minstay(@minstays)
@@ -141,6 +129,24 @@ def check_available_dates(available_dates, start_date, end_date)
     else
       # if it's not in this range, we don't need to move further in the function
       return 0
+    end
+
+  end
+end
+
+def get_start_end_indices(property, availability)
+  availability.each_with_index do |avail, i|
+    # finding the current date based on every iteration
+    @currentDate = (Date.parse(property[:start_date]) + i).strftime("%Y-%m-%d")
+
+    # get start_index
+    if @currentDate == @start
+      @start_index = i
+    end
+
+    #get end_index
+    if @currentDate == @end
+      @end_index = i
     end
 
   end
